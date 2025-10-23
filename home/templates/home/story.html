@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stories of Country — Story</title>
+  <link rel="stylesheet" href="{% static 'home/styles.css' %}">
+
+  <style>
+    /* Hero section */
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      color: #fff;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                  url("{% static 'home/img/west.png' %}") no-repeat center/cover;
+      border-radius: 8px;
+    }
+    .hero p { color: #eee; }
+
+    /* Content sections */
+    .section {
+      margin: 40px 0;
+      padding: 24px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Video embed */
+    iframe {
+      border: none;
+      width: 100%;
+      max-width: 720px;
+      height: 405px;
+      display: block;
+      margin: 20px auto;
+      border-radius: 10px;
+    }
+
+    /* 3D demo */
+    #three-container {
+      width: 100%;
+      height: 500px;
+      background: #000;
+      border-radius: 10px;
+      margin: 20px auto;
+    }
+    #annotation {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      display: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="header-inner">
+      <a href="{% url 'index' %}" class="brand">
+        <div class="brand__logo"></div>
+        <span class="brand__title">Stories of Country</span>
+      </a>
+      <nav>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'story' %}" aria-current="page">Story</a>
+        <a href="{% url 'map' %}">Map</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'three_demo' %}">3D Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main id="main" class="container page">
+    <section class="hero">
+      <h1>Stories of Country</h1>
+      <p>
+        In Aboriginal culture, stories are not just tales — they are teachings. 
+        They explain how land was formed, why places are important, and how people belong to Country.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Mandilbareng / Mardbabay</h2>
+      <p>
+        The rock art at <strong>Mandilbareng (Mardbabay)</strong> in Western Arnhem Land is part of a
+        living cultural landscape. It connects people, ancestors, animals, and seasons. 
+        Elders and families maintain and restore these places, ensuring that knowledge continues 
+        across generations. These artworks are more than images — they are records of law, 
+        ceremony, and survival.
+      </p>
+      <p>
+        Stories here include journeys of ancestors, waterholes that provide life, and seasonal 
+        changes that guide food gathering. Restoration efforts led by artists like Timothy Nabegeyo 
+        and family show how traditional and modern techniques combine to protect this heritage.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Watch the Story</h2>
+      <iframe src="https://player.vimeo.com/video/520815170?h=a8f5fcef4f" allowfullscreen></iframe>
+    </section>
+
+    <section class="section">
+      <h2>Story Themes</h2>
+      <ul>
+        <li><strong>Site Stories</strong> – rivers, rocks, and sacred places.</li>
+        <li><strong>Seasonal Stories</strong> – reading the land and skies for food and weather.</li>
+        <li><strong>Community Stories</strong> – voices that share life, survival, and learning.</li>
+      </ul>
+      <p>
+        Each story is told with respect. Some knowledge is public; other knowledge belongs to families 
+        and Elders. What is shared here is to help people learn and appreciate.
+      </p>
+    </section>
+
+    <!-- Interactive 3D Prototype -->
+    <section class="section">
+      <h2>Interactive 3D Prototype</h2>
+      <p>Explore a simple 3D artefact with annotation markers as a proof of concept.</p>
+      <div id="three-container"></div>
+      <div id="annotation">Annotation: This represents a cultural story.</div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner center">
+      Shared with community permission. © 2025 Charles Darwin University
+    </div>
+  </footer>
+
+  <!-- Three.js and Story.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script>
+    // Three.js setup for Story page
+    const container = document.getElementById("three-container");
+
+    // Scene, camera, renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      1000
+    );
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(container.clientWidth, 500);
+    container.appendChild(renderer.domElement);
+
+    // Cube demo
+    const cube = new THREE.Mesh(
+      new THREE.BoxGeometry(),
+      new THREE.MeshStandardMaterial({ color: 0x884422 })
+    );
+    scene.add(cube);
+
+    // Light
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(3, 3, 5).normalize();
+    scene.add(light);
+
+    camera.position.z = 3;
+
+    // Annotation raycast
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    const annotation = document.getElementById("annotation");
+
+    function onClick(e) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+
+      const hit = raycaster.intersectObjects([cube]);
+      annotation.style.display = hit.length ? "block" : "none";
+      if (hit.length) {
+        annotation.innerText = "Annotation: Mandilbareng rock art story.";
+      }
+    }
+    renderer.domElement.addEventListener("click", onClick);
+
+    // Animate
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+
+  <!-- App JS for nav highlight -->
+  <script src="{% static 'home/app.js' %}"></script>
+</body>
+</html>

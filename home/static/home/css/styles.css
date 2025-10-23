@@ -1,0 +1,361 @@
+/* --------- Base --------- */
+:root {
+  --bg: #fdfdfd;
+  --text: #222;
+  --muted: #555;
+  --accent: #2c3e50; /* Dark Blue */
+  --accent-light: #3498db; /* Bright Blue */
+  --link: #3498db;
+  --radius: 10px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  outline: none !important;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 "Segoe UI", Roboto, Arial, sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* --------- Header / Navbar --------- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--accent);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.brand__logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-light);
+}
+
+.brand__title {
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+nav a {
+  position: relative;
+  color: #fff;
+  text-decoration: none;
+  margin: 0 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: color 0.2s ease;
+}
+
+nav a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0%;
+  height: 2px;
+  background: var(--accent-light);
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+nav a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+nav a:hover {
+  color: var(--accent-light);
+}
+
+/* --------- Hero --------- */
+.hero {
+  text-align: center;
+  padding: 100px 20px;
+  background: linear-gradient(180deg, var(--accent-light) 0%, var(--accent) 100%);
+  color: #fff;
+}
+
+.hero h1 {
+  margin-bottom: 16px;
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
+.hero p {
+  max-width: 700px;
+  margin: 0 auto 24px;
+  color: #f0f0f0;
+}
+
+/* --------- Sections --------- */
+.section {
+  padding: 80px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.section:nth-child(even) {
+  background: #f7f9fc;
+  border-radius: var(--radius);
+}
+
+.section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.section h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  margin: 10px auto 0;
+  background: var(--accent-light);
+  border-radius: 2px;
+}
+
+.section p {
+  max-width: 800px;
+  margin: 0 auto 16px;
+  line-height: 1.7;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* --------- Iframes --------- */
+iframe {
+  display: block;
+  margin: 20px auto;
+  max-width: 100%;
+  width: 700px;
+  height: 400px;
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* --------- Buttons --------- */
+.btn {
+  display: inline-block;
+  background: var(--accent-light);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--accent);
+  transform: scale(1.05);
+}
+
+.btn.secondary {
+  background: #e0e0e0;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+.btn.secondary:hover {
+  background: #d5d5d5;
+}
+
+/* --------- Map & Images --------- */
+#leaflet-map,
+.about-map img {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-top: 20px;
+}
+
+#leaflet-map {
+  height: 600px;
+  width: 100%;
+}
+
+.about-map img {
+  width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* --------- Footer --------- */
+footer {
+  background: var(--accent);
+  color: #eee;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.footer-inner {
+  padding: 18px 0;
+}
+
+/* --------- Back to Top Button --------- */
+#backToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--accent-light);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, background 0.2s ease;
+  z-index: 100;
+}
+
+#backToTop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+#backToTop:hover {
+  background: var(--accent);
+}
+
+/* --------- Animations --------- */
+.section,
+.hero {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section.visible,
+.hero.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --------- Image Compare (Before/After Slider) --------- */
+.img-compare-container {
+  position: relative;
+  width: 80%;
+  max-width: 700px;
+  margin: 20px auto;
+  overflow: hidden;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.img-compare-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.img-compare-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%; /* Start overlay at 50% */
+  height: 100%;
+  overflow: hidden;
+}
+
+.img-compare-overlay img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.img-compare-slider {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  appearance: none;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 3px;
+  cursor: ew-resize;
+}
+
+.img-compare-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+.img-compare-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+/* --------- Labels (Before/After) --------- */
+.compare-label {
+  position: absolute;
+  top: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  padding: 4px 8px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 4px;
+}
+
+.compare-before {
+  left: 10px;
+}
+
+.compare-after {
+  right: 10px;
+}
+
+footer a {
+  color: #eee;
+  text-decoration: underline;
+}
+
+footer a:hover {
+  color: var(--accent-light);
+}
+
+
+
+
+
+
+

@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stories of Country — About</title>
+  <link rel="stylesheet" href="{% static 'home/styles.css' %}">
+
+  <style>
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      color: #fff;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                  url("{% static 'home/img/after restoration Orthomosaic.jpg' %}") no-repeat center/cover;
+      border-radius: 8px;
+    }
+    .hero p { color: #eee; }
+
+    /* Section blocks */
+    .section {
+      margin: 40px 0;
+      padding: 24px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* 3D Preview */
+    #about-3d {
+      width: 100%;
+      height: 300px;
+      background: #000;
+      border-radius: 10px;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="header-inner">
+      <a href="{% url 'index' %}" class="brand">
+        <div class="brand__logo"></div>
+        <span class="brand__title">Stories of Country</span>
+      </a>
+      <nav>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'story' %}">Story</a>
+        <a href="{% url 'map' %}">Map</a>
+        <a href="{% url 'about' %}" aria-current="page">About</a>
+        <a href="{% url 'three_demo' %}">3D Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main id="main" class="container page">
+    <section class="hero">
+      <h1>About This Project</h1>
+      <p>
+        This project was created to explore how interactive web technologies like 
+        <strong>Three.js</strong> and modern web design can support storytelling in respectful ways.
+      </p>
+      <p>
+        It demonstrates annotation of cultural heritage models, multimedia integration, and accessibility 
+        features to make digital stories more engaging and culturally appropriate.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Prototype Preview</h2>
+      <p>
+        Below is a simple 3D demonstration showing how annotations can be integrated 
+        into cultural artefacts. This is a preview of the direction our final implementation 
+        is taking.
+      </p>
+      <div id="about-3d"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner center">
+      Shared with community permission. © 2025 Charles Darwin University
+    </div>
+  </footer>
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script>
+    // Three.js setup for About page
+    const container = document.getElementById("about-3d");
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      1000
+    );
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(container.clientWidth, 300);
+    container.appendChild(renderer.domElement);
+
+    // Sphere object
+    const sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 32, 32),
+      new THREE.MeshStandardMaterial({ color: 0x2255aa })
+    );
+    scene.add(sphere);
+
+    // Light
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(2, 2, 5).normalize();
+    scene.add(light);
+
+    camera.position.z = 3;
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      sphere.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+
+  <!-- Nav highlighting -->
+  <script src="{% static 'home/app.js' %}"></script>
+</body>
+</html>

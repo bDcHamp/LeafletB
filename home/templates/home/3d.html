@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stories of Country — 3D Demo with Hotspots</title>
+  <link rel="stylesheet" href="{% static 'home/styles.css' %}">
+
+  <style>
+    body { margin: 0; overflow: hidden; }
+
+    /* Fullscreen Three.js canvas */
+    #three-full {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+
+    /* Annotation tooltip */
+    .annotation {
+      position: absolute;
+      padding: 6px 12px;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      border-radius: 6px;
+      display: none;
+      z-index: 5;
+      font-size: 14px;
+    }
+
+    /* Hotspot markers */
+    .hotspot {
+      width: 12px;
+      height: 12px;
+      background: red;
+      border-radius: 50%;
+      position: absolute;
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Footer aligned same as other pages */
+    footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 8px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="header-inner">
+      <a href="{% url 'index' %}" class="brand">
+        <div class="brand__logo"></div>
+        <span class="brand__title">Stories of Country</span>
+      </a>
+      <nav>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'story' %}">Story</a>
+        <a href="{% url 'map' %}">Map</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'three_demo' %}" aria-current="page">3D Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 3D Canvas -->
+  <div id="three-full"></div>
+  <div id="annotation" class="annotation"></div>
+
+  <!-- Footer -->
+  <footer>
+    Shared with community permission. © 2025 Charles Darwin University
+  </footer>
+
+  <!-- Three.js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+  <script>
+    // Setup scene
+    const container = document.getElementById("three-full");
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+// Load your 3D model instead of cube
+const loader = new THREE.GLTFLoader();
+loader.load(
+  '/static/models/my_model.glb',
+  function (gltf) {
+    scene.add(gltf.scene);
+  },
+  undefined,
+  function (error) {  
+    console.error('Error loading model:', error);
+  }
+);
+
+
+    // Lights
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040));
+
+    camera.position.z = 4;
+
+    // Hotspot data
+    const hotspots = [
+      { pos: new THREE.Vector3(0.5, 0.5, 0.5), text: "Top corner: Sky/ancestor story" },
+      { pos: new THREE.Vector3(-0.5, -0.5, 0.5), text: "Front bottom corner: Waterhole story" },
+      { pos: new THREE.Vector3(0.5, -0.5, -0.5), text: "Back corner: Seasonal change" },
+    ];
+
+    const annotation = document.getElementById("annotation");
+
+    // Convert 3D coords to 2D screen coords
+    function toScreenPosition(obj, camera) {
+      const vector = obj.clone().project(camera);
+      return {
+        x: (vector.x + 1) / 2 * window.innerWidth,
+        y: -(vector.y - 1) / 2 * window.innerHeight
+      };
+    }
+
+    // Create hotspot elements
+    const hotspotElements = [];
+    hotspots.forEach(h => {
+      const el = document.createElement("div");
+      el.className = "hotspot";
+      el.dataset.text = h.text;
+      document.body.appendChild(el);
+      hotspotElements.push({ el: el, pos: h.pos });
+
+      el.addEventListener("click", e => {
+        annotation.innerText = h.text;
+        annotation.style.left = e.clientX + 15 + "px";
+        annotation.style.top = e.clientY + "px";
+        annotation.style.display = "block";
+      });
+    });
+
+    // Resize handling
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Animate loop
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+
+      // Update hotspot positions
+      hotspotElements.forEach(h => {
+        const screenPos = toScreenPosition(h.pos, camera);
+        h.el.style.left = screenPos.x + "px";
+        h.el.style.top = screenPos.y + "px";
+      });
+    }
+    animate();
+  </script>
+
+  <!-- Nav highlighting -->
+  <script src="{% static 'home/app.js' %}"></script>
+</body>
+</html>

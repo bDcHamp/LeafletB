@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Stories of Country{% endblock %}</title>
+
+  <!-- Project CSS (cache-busted) -->
+  <link rel="stylesheet" href="{% static 'home/css/styles.css' %}?v=1">
+  
+  <style>
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-left: 2rem;
+    }
+
+    .auth-buttons a {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      color: white !important;
+    }
+
+    .auth-btn.login-btn {
+      border: 1px solid white;
+      background: transparent;
+    }
+
+    .auth-btn.login-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .auth-btn.signup-btn {
+      background: white;
+      color: #2196F3 !important;
+    }
+
+    .auth-btn.signup-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .username {
+      color: white;
+      margin-right: 1rem;
+    }
+
+    .auth-btn.logout-btn {
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .auth-btn.logout-btn:hover {
+      border-color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- CesiumJS CDN -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/cesium@1.122.0/Build/Cesium/Widgets/widgets.css">
+<script>
+  window.CESIUM_BASE_URL = "https://cdn.jsdelivr.net/npm/cesium@1.122.0/Build/Cesium/";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.122.0/Build/Cesium/Cesium.js"></script>
+
+<!-- Optional: make sure 3D container exists and has default size -->
+<style>
+  #cesiumContainer {
+    width: 100%;
+    height: 100vh;
+    display: none; /* Hidden until “View in 3D” is clicked */
+  }
+</style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header>
+    <div class="header-inner">
+      <a href="{% url 'index' %}" class="brand">
+        <div class="brand__logo"></div>
+        <span class="brand__title">Stories of Country</span>
+      </a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/story">Story</a>
+        <a href="/map">Map</a>
+        <a href="/about">About</a>
+        <a href="/3d-demo">3D Demo</a>
+      </nav>
+      <div class="auth-buttons">
+        {% if user.is_authenticated %}
+          <span class="username">{{ user.username }}</span>
+          <a href="{% url 'account_logout' %}" class="auth-btn logout-btn">Logout</a>
+        {% else %}
+          <a href="{% url 'account_login' %}" class="auth-btn login-btn">Log In</a>
+          <a href="{% url 'account_signup' %}" class="auth-btn signup-btn">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- 🔑 Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Back to Top -->
+  <button id="backToTop">↑</button>
+
+  <!-- Global JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="{% static 'home/js/app.js' %}"></script>
+
+  <!-- Animations + Back to Top -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const elements = document.querySelectorAll(".section, .hero");
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add("visible");
+        });
+      }, { threshold: 0.2 });
+      elements.forEach(el => observer.observe(el));
+
+      const backToTop = document.getElementById("backToTop");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          backToTop.classList.add("show");
+        } else {
+          backToTop.classList.remove("show");
+        }
+      });
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+  </script>
+</body>
+</html>

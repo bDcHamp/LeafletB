@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stories of Country — Map</title>
+  <link rel="stylesheet" href="{% static 'home/styles.css' %}">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+      color: #fff;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                  url("{% static 'home/img/home.jpg' %}") no-repeat center/cover;
+      border-radius: 8px;
+    }
+
+    /* Map container */
+    #map {
+      height: 500px;
+      width: 100%;
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="header-inner">
+      <a href="{% url 'index' %}" class="brand">
+        <div class="brand__logo"></div>
+        <span class="brand__title">Stories of Country</span>
+      </a>
+      <nav>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'story' %}">Story</a>
+        <a href="{% url 'map' %}" aria-current="page">Map</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'three_demo' %}">3D Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main id="main" class="container page">
+    <section class="hero">
+      <h1>Explore Stories on the Map</h1>
+      <p>
+        This map highlights important sites connected to the Stories of Country. 
+        Click on a marker to learn more about each place.
+      </p>
+    </section>
+
+    <div id="map"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner center">
+      Shared with community permission. © 2025 Charles Darwin University
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map centered on Arnhem Land
+    const map = L.map('map').setView([-12.35, 134.5], 6);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Example marker: Mandilbareng (Mardbabay)
+    L.marker([-12.15, 134.2]).addTo(map)
+      .bindPopup("<b>Mandilbareng (Mardbabay)</b><br>Important rock art site in Western Arnhem Land.");
+
+    // Example marker: Injalak Arts Centre
+    L.marker([-12.325, 132.825]).addTo(map)
+      .bindPopup("<b>Injalak Arts Centre</b><br>Hub for cultural knowledge and artworks.");
+  </script>
+
+  <!-- Nav highlighting -->
+  <script src="{% static 'home/app.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+  <!-- Cesium widgets CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/cesium@1.122.0/Build/Cesium/Widgets/widgets.css">
+  <!-- Cesium core JS -->
+  <script src="https://cdn.jsdelivr.net/npm/cesium@1.122.0/Build/Cesium/Cesium.js"></script>
+
+  <style>
+  #cesiumContainer {
+    width: 100%;
+    height: 75vh;
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+    display: none;
+  }
+
+  #leaflet-map {
+    width: 100%;
+    height: 75vh;
+    pointer-events: auto;
+  }
+
+  .pin-ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    display: flex;
+    gap: .5rem;
+  }
+
+  .pin-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    display: grid;
+    place-items: center;
+    z-index: 20;
+  }
+  .pin-modal__box {
+    background: #fff;
+    color:#111;
+    width: min(92vw, 400px);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  }
+  .pin-modal__box label {
+    display: grid;
+    gap: 6px;
+    margin: 10px 0;
+    font-weight: 600;
+  }
+  .pin-modal__box input, .pin-modal__box textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  .pin-modal__actions {
+    display:flex;
+    gap:.5rem;
+    justify-content:flex-end;
+    margin-top: 10px;
+  }
+
+  /* Before/after image compare */
+  .img-compare-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+  }
+  .img-compare-container img {
+    width: 100%;
+    display: block;
+  }
+  .img-compare-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+  }
+  .img-compare-slider {
+    width: 100%;
+    margin-top: 10px;
+  }
+  .compare-label {
+    position: absolute;
+    top: 10px;
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .compare-before { left: 10px; }
+  .compare-after { right: 10px; }
+  </style>
+{% endblock %}
+
+{% block title %}Stories of Country — Home{% endblock %}
+
+{% block content %}
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <h1>Welcome to Stories of Country</h1>
+    <p>
+      We acknowledge the Traditional Custodians of the lands and waters across Australia
+      and pay our respect to Elders past and present.
+    </p>
+    <p>
+      Knowledge is carried through stories — of land, ancestors, seasons, and community.
+      This platform is designed to share some of these stories in a respectful and interactive way.
+    </p>
+    <div>
+      <a href="#story" class="btn">Explore Stories</a>
+      <a href="#map" class="btn secondary">View Map</a>
+      <a href="#about" class="btn">Learn More</a>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section id="story" class="section">
+    <h2>Stories of Country</h2>
+    <h3>Mandilbareng / Mardbabay</h3>
+    <p>
+      The rock art at <strong>Mandilbareng (Mardbabay)</strong> in Western Arnhem Land is part of a
+      living cultural landscape. It connects people, ancestors, animals, and seasons. 
+      Elders and families maintain and restore these places, ensuring that knowledge continues 
+      across generations.
+    </p>
+    <iframe src="https://player.vimeo.com/video/520815170?h=a8f5fcef4f" 
+            width="640" height="360" frameborder="0" allowfullscreen></iframe>
+  </section>
+
+  <!-- MAP -->
+  <section id="map" class="section">
+    <h2>Interactive Map</h2>
+    <p>
+      This prototype map connects <strong>cultural sites</strong> to digital storytelling.  
+      Markers show places like <em>Mandilbareng</em>, <em>Injalak Arts Centre</em>, and waterholes that sustain communities.
+    </p>
+
+    <div style="margin: 1rem 0;">
+      <button id="to3d" class="btn">View in 3D</button>
+      <button id="to2d" class="btn secondary" style="display: none;">Back to 2D</button>
+    </div>
+
+    <div id="leaflet-map"></div>
+    <div id="cesiumContainer"></div>
+
+    <!-- Pin UI -->
+    <div id="pinUi" class="pin-ui" style="display:none">
+      <button id="pinModeBtn" class="btn">➕ Add pin</button>
+      <button id="exitPinModeBtn" class="btn secondary" style="display:none">Done</button>
+    </div>
+
+    <!-- Pin modal -->
+    <div id="pinModal" class="pin-modal" style="display:none">
+      <div class="pin-modal__box">
+        <h3 id="pinModalTitle">New pin</h3>
+        <label>Title
+          <input id="pinTitle" type="text" placeholder="e.g. Waterhole" />
+        </label>
+        <label>Notes
+          <textarea id="pinNotes" rows="4" placeholder="Type details…"></textarea>
+        </label>
+        <div class="pin-modal__actions">
+          <button id="pinSave" class="btn">Save</button>
+          <button id="pinDelete" class="btn danger" style="display:none">Delete</button>
+          <button id="pinCancel" class="btn secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3D Rock Art Demo -->
+  <section id="three-demo" class="section">
+    <h2>3D Rock Art Demo</h2>
+    <p>
+      Drag the slider to compare the rock art <strong>before</strong> and <strong>after</strong> digital restoration.  
+      This demonstrates how digital tools and 3D imaging help preserve and interpret cultural heritage.
+    </p>
+
+    <div class="img-compare-container">
+      <img src="{% static 'home/img/after-restoration.jpg' %}" alt="After Restoration">
+      <div class="img-compare-overlay">
+        <img src="{% static 'home/img/before-restoration.jpg' %}" alt="Before Restoration">
+      </div>
+      <input type="range" min="0" max="100" value="50" class="img-compare-slider">
+      <span class="compare-label compare-before">Before</span>
+      <span class="compare-label compare-after">After</span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <h2>About This Project</h2>
+    <p>
+      <strong>Stories of Country</strong> is a student-led research project at Charles Darwin University.
+      It explores how digital tools can support the respectful sharing of Indigenous knowledge, stories, and cultural landscapes.
+    </p>
+  </section>
+
+  <!-- SCRIPT -->
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Shared site marker
+    const SITE = {
+      title: "Mandilbareng / Mardbabay",
+      lat: -12.267,
+      lon: 133.05,
+      description: `
+        <h3>Mandilbareng / Mardbabay</h3>
+        <p>The rock art at Mandilbareng (Mardbabay) in Western Arnhem Land is part of a living cultural landscape.
+        It connects people, ancestors, animals, and seasons.</p>
+        <p><a href="/cms/mandilbareng-mardbabay-a-living-cultural-landscape/" target="_blank">Read more →</a></p>
+      `
+    };
+
+    // --- LEAFLET 2D MAP ---
+    const map = L.map('leaflet-map').setView([SITE.lat, SITE.lon], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+    L.marker([SITE.lat, SITE.lon])
+      .addTo(map)
+      .bindPopup(SITE.description);
+
+    // --- CESIUM 3D MAP TOGGLE ---
+    const to3dBtn = document.getElementById('to3d');
+    const to2dBtn = document.getElementById('to2d');
+    const map2d = document.getElementById('leaflet-map');
+    const map3d = document.getElementById('cesiumContainer');
+    let viewer = null;
+
+    to3dBtn.addEventListener('click', async () => {
+      map2d.style.display = 'none';
+      map3d.style.display = 'block';
+      to3dBtn.style.display = 'none';
+      to2dBtn.style.display = 'inline-block';
+      if (!viewer) viewer = await initCesium();
+    });
+
+    to2dBtn.addEventListener('click', () => {
+      map3d.style.display = 'none';
+      map2d.style.display = 'block';
+      to2dBtn.style.display = 'none';
+      to3dBtn.style.display = 'inline-block';
+    });
+
+    async function initCesium() {
+      const viewer = new Cesium.Viewer('cesiumContainer', {
+        imageryProvider: new Cesium.UrlTemplateImageryProvider({
+          url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          credit: '© OpenStreetMap'
+        }),
+        baseLayerPicker: false,
+        terrainProvider: new Cesium.EllipsoidTerrainProvider(),
+        animation: false,
+        timeline: false,
+        sceneModePicker: true
+      });
+
+      // Main site marker (3D pin)
+      const pinColor = Cesium.Color.fromCssColorString('#e74c3c');
+      const pinImg = new Cesium.PinBuilder().fromColor(pinColor, 48).toDataURL();
+      viewer.entities.add({
+        name: SITE.title,
+        position: Cesium.Cartesian3.fromDegrees(SITE.lon, SITE.lat, 0),
+        billboard: {
+          image: pinImg,
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+          disableDepthTestDistance: Number.POSITIVE_INFINITY
+        },
+        label: {
+          text: SITE.title,
+          font: '16px sans-serif',
+          fillColor: Cesium.Color.WHITE,
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 2,
+          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+          pixelOffset: new Cesium.Cartesian2(0, -48)
+        },
+        description: SITE.description
+      });
+
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(SITE.lon, SITE.lat, 250000)
+      });
+
+      setupPinUI(viewer);
+      return viewer;
+    }
+
+    // ======== Pin Logic ========
+    function setupPinUI(viewer) {
+      const btnAdd  = document.getElementById('pinModeBtn');
+      const btnExit = document.getElementById('exitPinModeBtn');
+      const pinUi   = document.getElementById('pinUi');
+      const modal   = document.getElementById('pinModal');
+
+      pinUi.style.display = 'block';
+      const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+      btnAdd.onclick = () => {
+        btnAdd.style.display = 'none';
+        btnExit.style.display = 'inline-block';
+        viewer.canvas.style.cursor = 'crosshair';
+
+        handler.setInputAction((movement) => {
+          const cartesian = viewer.scene.pickPosition(movement.position) ||
+            viewer.camera.pickEllipsoid(movement.position, viewer.scene.globe.ellipsoid);
+          if (!cartesian) return;
+          const carto = Cesium.Cartographic.fromCartesian(cartesian);
+          const lon = Cesium.Math.toDegrees(carto.longitude);
+          const lat = Cesium.Math.toDegrees(carto.latitude);
+          openPinModal({ lon, lat, title: '', notes: '' }, viewer);
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      };
+
+      btnExit.onclick = () => {
+        btnAdd.style.display = 'inline-block';
+        btnExit.style.display = 'none';
+        viewer.canvas.style.cursor = 'default';
+        handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+      };
+    }
+
+    function openPinModal(model, viewer) {
+      const m = document.getElementById('pinModal');
+      const titleEl = document.getElementById('pinTitle');
+      const notesEl = document.getElementById('pinNotes');
+      const saveBtn = document.getElementById('pinSave');
+      const cancel = document.getElementById('pinCancel');
+      m.style.display = 'grid';
+
+      const cleanup = () => { m.style.display = 'none'; };
+      saveBtn.onclick = () => {
+        const title = titleEl.value.trim() || 'Untitled pin';
+        const notes = notesEl.value.trim();
+        createPinEntity({ lon: model.lon, lat: model.lat, title, notes }, viewer);
+        cleanup();
+      };
+      cancel.onclick = cleanup;
+    }
+
+    function createPinEntity({ lon, lat, title, notes }, viewer) {
+      const pinImg = new Cesium.PinBuilder().fromColor(Cesium.Color.RED, 48).toDataURL();
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(lon, lat),
+        billboard: { image: pinImg, verticalOrigin: Cesium.VerticalOrigin.BOTTOM },
+        label: {
+          text: title, font: '14px sans-serif',
+          fillColor: Cesium.Color.WHITE,
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 2,
+          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+          pixelOffset: new Cesium.Cartesian2(0, -42)
+        },
+        description: notes
+      });
+    }
+
+    // Before/after slider
+    const slider = document.querySelector(".img-compare-slider");
+    const overlay = document.querySelector(".img-compare-overlay");
+    if (slider && overlay) {
+      slider.addEventListener("input", (e) => {
+        overlay.style.width = `${e.target.value}%`;
+      });
+    }
+  });
+  </script>
+
+  <footer>
+    <div class="footer-inner">
+      <p>© {% now "Y" %} Charles Darwin University — Stories of Country Project</p>
+      <p>Built using Django, Wagtail, Leaflet & Cesium</p>
+    </div>
+  </footer>
+{% endblock %}

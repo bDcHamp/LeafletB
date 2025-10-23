@@ -1,0 +1,32 @@
+.navbar-nav .nav-item {
+    margin: 0 5px;
+}
+
+.navbar-nav .btn {
+    padding: 0.375rem 1rem;
+}
+
+.navbar-nav .btn-outline-light {
+    border: 1px solid #fff;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .btn-outline-light:hover {
+    background-color: #fff;
+    color: #343a40 !important;
+}
+
+.navbar-nav .btn-light {
+    background-color: #fff;
+    color: #343a40 !important;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .btn-light:hover {
+    background-color: #e2e6ea;
+}
+
+.navbar-nav .nav-link.btn {
+    display: inline-block;
+    margin-top: 5px;
+}

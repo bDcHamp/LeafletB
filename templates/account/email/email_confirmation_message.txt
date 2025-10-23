@@ -1,0 +1,12 @@
+{% load account %}{% user_display user as user_display %}{% load i18n %}{% autoescape off %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Welcome to Stories of Country!
+
+You're receiving this email because {{ user_display }} has registered for an account at Stories of Country.
+
+To confirm your email address, please click on the link below:
+{{ activate_url }}
+
+If you did not register for this account, you can safely ignore this email.
+
+Thank you for joining Stories of Country!
+{% endblocktrans %}
+{% endautoescape %}
