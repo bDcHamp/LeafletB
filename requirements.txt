@@ -53,6 +53,7 @@ wagtail-django-recaptcha
 wagtail-generic-chooser
 wagtailgeowidget
 wagtailgmaps
+wagtailmedia
 wagtailmenus
 wagtailstreamforms
 wagtailvideos
