@@ -6,29 +6,28 @@ Stories of Country is a web platform that acknowledges the Traditional Custodian
 
 1. Extract the zip file
 2. Create a Python virtual environment:
-   ```bash
+   
    python -m venv venv
-   ```
+   
 3. Activate the virtual environment:
    - Windows: `.\venv\Scripts\activate`
    - Mac/Linux: `source venv/bin/activate`
 4. Install requirements:
-   ```bash
    pip install -r requirements.txt
-   ```
+   
 5. Create `.env` file in `livingarchive/settings/` (see Environment Configuration section)
 6. Run migrations:
-   ```bash
+   bash
    python manage.py migrate
-   ```
+   
 7. Create superuser:
-   ```bash
+   bash
    python manage.py createsuperuser
-   ```
+   
 8. Run the server:
-   ```bash
+   bash
    python manage.py runserver
-   ```
+   
 
 ## Features
 
@@ -53,37 +52,37 @@ Before you begin, ensure you have the following installed:
 
 ### 1. Clone the Repository
 
-```bash
+bash
 git clone <repository-url>
 cd LeafletBuild-main
-```
+
 
 ### 2. Set Up Python Virtual Environment
 
 #### On Windows:
-```bash
+bash
 python -m venv venv
 .\venv\Scripts\activate
-```
+
 
 #### On macOS/Linux:
-```bash
+bash
 python3 -m venv venv
 source venv/bin/activate
-```
+
 
 ### 3. Install Dependencies
 
-```bash
+bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
-```
+
 
 ### 4. Environment Configuration
 
 Create a `.env` file in the `livingarchive/settings/` directory with the following content:
 
-```plaintext
+plaintext
 DJANGO_SETTINGS_MODULE=livingarchive.settings.dev
 DJANGO_SECRET_KEY=your-secret-key
 WAGTAIL_ADDRESS_MAP_KEY=your-google-maps-api-key
@@ -93,7 +92,7 @@ EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your-gmail-address@gmail.com
 EMAIL_HOST_PASSWORD=your-app-specific-password
 DEFAULT_FROM_EMAIL=your-gmail-address@gmail.com
-```
+
 
 Replace the placeholder values with your actual credentials:
 - Generate a secure Django secret key
@@ -102,28 +101,28 @@ Replace the placeholder values with your actual credentials:
 
 ### 5. Database Setup
 
-```bash
+bash
 python manage.py makemigrations
 python manage.py migrate
-```
+
 
 ### 6. Create a Superuser (Admin Account)
 
-```bash
+bash
 python manage.py createsuperuser
-```
+
 
 ### 7. Run the Development Server
 
-```bash
+bash
 python manage.py runserver
-```
+
 
 The application will be available at: http://127.0.0.1:8005/
 
 ## Project Structure
 
-```
+
 LeafletBuild-main/
 ├── blog/              # Blog app for story sharing
 ├── home/              # Home page app
@@ -135,7 +134,7 @@ LeafletBuild-main/
 ├── media/           # User-uploaded content
 ├── templates/       # HTML templates
 └── manage.py       # Django management script
-```
+
 
 ## Key Components
 
@@ -151,23 +150,23 @@ LeafletBuild-main/
 
 The project uses Python type hints and mypy for type checking. Run type checks with:
 
-```bash
+bash
 mypy .
-```
+
 
 ### Running Tests
 
-```bash
+bash
 python manage.py test
-```
+
 
 ### Code Style
 
 The project follows PEP 8 style guidelines. Run code style checks with:
 
-```bash
+bash
 flake8
-```
+
 
 ## Deployment
 
@@ -176,9 +175,9 @@ For production deployment:
 1. Update `livingarchive/settings/production.py`
 2. Set environment variables for production settings
 3. Collect static files:
-   ```bash
+   bash
    python manage.py collectstatic
-   ```
+   
 4. Configure your web server (e.g., Nginx, Apache)
 5. Set up WSGI/ASGI server (e.g., Gunicorn, uWSGI)
 
@@ -206,7 +205,7 @@ This project acknowledges the Traditional Custodians of the lands and waters acr
 
 ## Common Issues and Solutions
 
-1. **Email Verification Issues**
+1. Email Verification Issues**
    - Check spam folder for verification emails
    - Verify Gmail app password is correctly set
 
@@ -221,17 +220,17 @@ This project acknowledges the Traditional Custodians of the lands and waters acr
 ## Maintenance
 
 ### Regular Updates
-```bash
+bash
 git pull                           # Get latest code
 pip install -r requirements.txt    # Update dependencies
 python manage.py migrate          # Apply any new migrations
 python manage.py collectstatic    # Update static files
-```
+
 
 ### Backup Database
-```bash
+bash
 python manage.py dumpdata > backup.json
-```
+
 
 ## Contributing
 
