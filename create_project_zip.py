@@ -55,8 +55,8 @@ def create_zip():
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     zip_filename = f'LeafletBuild_{timestamp}.zip'
     
-    # Create a new zip file with ZIP64 enabled
-    with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED, True) as zipf:
+    # Create a new zip file
+    with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, dirs, files in os.walk(current_dir):
             # Convert to Path objects
             root_path = Path(root)
