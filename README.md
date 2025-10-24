@@ -146,12 +146,6 @@ LeafletBuild-main/
 
 ## Development
 
-### Type Checking
-
-The project uses Python type hints and mypy for type checking. Run type checks with:
-
-bash
-mypy .
 
 
 ### Running Tests
@@ -160,12 +154,7 @@ bash
 python manage.py test
 
 
-### Code Style
 
-The project follows PEP 8 style guidelines. Run code style checks with:
-
-bash
-flake8
 
 
 ## Deployment
@@ -178,8 +167,8 @@ For production deployment:
    bash
    python manage.py collectstatic
    
-4. Configure your web server (e.g., Nginx, Apache)
-5. Set up WSGI/ASGI server (e.g., Gunicorn, uWSGI)
+4. Configure your web server 
+5. Set up WSGI/ASGI server 
 
 ## Contributing
 
@@ -189,9 +178,7 @@ For production deployment:
 4. Push to the branch
 5. Create a Pull Request
 
-## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
@@ -234,7 +221,7 @@ python manage.py dumpdata > backup.json
 
 ## Contributing
 
-1. Fork the repository
+1. Fork the repository(need access)
 2. Create a feature branch
 3. Commit your changes
 4. Push to the branch
@@ -243,3 +230,6 @@ python manage.py dumpdata > backup.json
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+
+#* for looks
