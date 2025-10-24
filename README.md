@@ -1,6 +1,6 @@
-# Stories of Country
+# Living Archive
 
-Stories of Country is a web platform that acknowledges the Traditional Custodians of the lands and waters across Australia. The platform is designed to share stories of land, ancestors, seasons, and community in a respectful and interactive way.
+Living Archive is a web platform that acknowledges the Traditional Custodians of the lands and waters across Australia. The platform is designed to share stories of land, ancestors, seasons, and community in a respectful and interactive way.
 
 ## Quick Start Guide
 
